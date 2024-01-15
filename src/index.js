@@ -1,59 +1,71 @@
 // index.js
-import './styles/index.css'; 
-import {initialCards} from './scripts/cards.js';
-
-
-// @todo: Темплейт карточки
-const cardTemplate = document.querySelector("#card-template").content;
+import "./styles/index.css";
+import { initCards, createCard } from "./components/card.js";
+import { handleOpenPopup } from "./components/modal.js";
 
 // @todo: DOM узлы
 const placesList = document.querySelector(".places__list");
 
-// @todo: Функция создания карточки
-function createCard(cardItem, deleteCard) {
-  const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-  const deleteButton = cardElement.querySelector(".card__delete-button");
-  
+const logoImage = new URL("./images/logo.svg", import.meta.url);
+const avatarImage = new URL("./images/avatar.jpg", import.meta.url);
 
-  cardElement.querySelector(".card__title").textContent = cardItem.name;
-  cardElement.querySelector(".card__image").src = cardItem.link;
-  cardElement.querySelector(".card__image").alt = cardItem.name;
-  deleteButton.addEventListener("click", function (event) {
-    deleteCard(event);
-  });
-  return cardElement;
-}
+const whoIsTheGoat = [
+  { name: "Logo", link: logoImage },
+  { name: "Avarat", link: avatarImage },
+];
 
-// @todo: Функция удаления карточки
-function deleteCard(event) {
-  const imageElement = event.target.closest(".places__item");
-  imageElement.remove();
-}
+//***
+const editProfilePopup = document.querySelector(".popup_type_edit");
+const createCardPopup = document.querySelector(".popup_type_new-card");
 
-// @todo: Вывести карточки на страницу
-initialCards.forEach((item) => {
-  placesList.append(createCard(item, deleteCard));
+const editProfileButton = document.querySelector(".profile__edit-button"); //кнопка добавления профиля карточки
+const createCardButton = document.querySelector(".profile__add-button");
+
+//Функция открытия и редактирование профиля
+editProfileButton.addEventListener("click", () => {
+  const nameInput = editProfilePopup.querySelector(".popup__input_type_name");
+  const jobInput = editProfilePopup.querySelector(
+    ".popup__input_type_description"
+  );
+
+  const currentNameElement = document.querySelector(".profile__title");
+  const currentJobElement = document.querySelector(".profile__description");
+
+  function open() {
+    nameInput.value = currentNameElement.textContent;
+    jobInput.value = currentJobElement.textContent;
+  }
+
+  function submit() {
+    currentNameElement.textContent = nameInput.value;
+    currentJobElement.textContent = jobInput.value;
+  }
+  function close() {}
+
+  handleOpenPopup(editProfilePopup, open, submit, close);
 });
 
-const logoImage = new URL('./images/logo.svg', import.meta.url);
-const avatarImage = new URL('./images/avatar.jpg', import.meta.url);
+createCardButton.addEventListener("click", () => {
+  const cardNameInput = document.querySelector(".popup__input_type_card-name");
+  const urlInput = document.querySelector(".popup__input_type_url");
 
+  function open() {
+    cardNameInput.value = null;
+    urlInput.value = null;
+  }
 
-const whoIsTheGoat = [
-{ name: 'Logo', link: logoImage },
-{ name: 'Avarat', link: avatarImage }
-]
+  function submit() {
+    const newCard = createCard({
+      name: cardNameInput.value,
+      link: urlInput.value,
+    });
 
-/*
-const jordanImage = new URL('./images/card_1.jpg', import.meta.url);
-const jamesImage = new URL('./images/card_2.jpg', import.meta.url);
-const bryantImage = new URL('./images/card_3.jpg', import.meta.url);
-const logoImage = new URL('./images/logo.svg', import.meta.url);
+    placesList.prepend(newCard);
+  }
 
-const whoIsTheGoat = [
-  // меняем исходные пути на переменные
-  { name: 'Michael Jordan', link: jordanImage },
-  { name: 'Lebron James', link: jamesImage },
-  { name: 'Kobe Bryant', link: bryantImage },
-  { name: 'Logo', link: logoImage },
-]; */
+  function close() {}
+
+  handleOpenPopup(createCardPopup, open, submit, close);
+});
+
+initCards(placesList);
