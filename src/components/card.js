@@ -1,64 +1,48 @@
-import { initialCards } from "../scripts/cards.js";
-import { handleOpenPopup } from "./modal.js";
-
 const cardTemplate = document.querySelector("#card-template").content;
 
-const popupTemplate = document.querySelector(".popup_type_image");
-
-export function initCards(placesList) {
-  // @todo: Вывести карточки на страницу
-  initialCards.forEach((item) => {
-    const card = createCard(item);
-    placesList.append(card);
-  });
-}
 
 // Функция создания карточки
-export function createCard(cardItem) {
+export function createCard(
+  cardItem,
+  deleteCardFn,
+  likeCardFn,
+  openCardFn,
+) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const deleteButton = cardElement.querySelector(".card__delete-button");
-  const cardsLiked = cardElement.querySelector(".card__like-button");
+  const likeButton = cardElement.querySelector(".card__like-button");
   const cardImage = cardElement.querySelector(".card__image");
+  const cardTitle = cardElement.querySelector(".card__title");
 
-  cardElement.querySelector(".card__title").textContent = cardItem.name;
-  cardElement.querySelector(".card__image").src = cardItem.link;
-  cardElement.querySelector(".card__image").alt = cardItem.name;
-  deleteButton.addEventListener("click", function (event) {
-    deleteCard(event);
+  cardTitle.textContent = cardItem.name;
+  cardImage.src = cardItem.link;
+  cardImage.alt = cardItem.name;
+
+  deleteButton.addEventListener("click", () => {
+    deleteCardFn(cardElement);
   });
 
-  cardImage.addEventListener("click", function (evt) {
-    if (evt.target === deleteButton) {
+  cardImage.addEventListener("click", (event) => {
+    if (event.target === deleteButton) {
       return;
     }
-    imageOpenCard(cardItem);
+    openCardFn(cardItem);
   });
 
-  cardsLiked.addEventListener("click", function (evt) {
-    likeClick(evt, cardsLiked); //лайк
+  likeButton.addEventListener("click", () => {
+    likeCardFn(likeButton);
   });
-
-  // Функция открытия попапа картинки
-  function imageOpenCard(cardItem) {
-    const popupImage = popupTemplate.querySelector(".popup__image");
-    const popupCaption = popupTemplate.querySelector(".popup__caption");
-
-    popupImage.src = cardItem.link;
-    popupCaption.textContent = cardItem.name;
-    popupImage.alt = cardItem.name;
-    handleOpenPopup(popupTemplate);
-  }
-
-  // Функция удаления карточки
-  function deleteCard(event) {
-    const imageElement = event.target.closest(".places__item");
-    imageElement.remove();
-  }
-
-  //Функция лайка карточки
-  function likeClick(evt, button) {
-    button.classList.toggle("card__like-button_is-active"); //лайк
-  }
 
   return cardElement;
+}
+
+export function handleDeleteCard(cardElement) {
+  cardElement.remove();
+  // Stackoverflow рулит - https://stackoverflow.com/questions/4386300/javascript-dom-how-to-remove-all-event-listeners-of-a-dom-object
+  // Говорят так можно все лиснеры удалить. Хочу в это верить
+  cardElement.replaceWith(cardElement.cloneNode(true));
+}
+
+export function handleLikeCard(cardButton) {
+  cardButton.classList.toggle("card__like-button_is-active");
 }

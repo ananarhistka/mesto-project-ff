@@ -1,66 +1,49 @@
-// Функция открытия попапа
-export function handleOpenPopup(popupEl, onOpenCb, onSumitCb, onCloseCb) {
-  popupEl.classList.add("popup_is-animated");
-  popupEl.classList.add("popup_is-opened");
 
-  const closeButton = popupEl.querySelector(".popup__close");
+export function createPopup({ button, popupTemplate, onOpened }) {
+  button.addEventListener('click', () => {
+    handleOpenPopup(popupTemplate);
 
-  if (onOpenCb) {
-    onOpenCb();
-  }
-
-  // Функция закрытия попапа при нажатии на оверлей
-  popupEl.addEventListener("click", (event) => {
-    if (event.currentTarget === event.target) {
-      handleClosePopup();
+    if (onOpened) {
+      onOpened();
     }
   });
+}
 
-  // Функция закрытия попапа при нажатии на Крестик
-  if (closeButton) {
-    closeButton.addEventListener("click", () => {
-      handleClosePopup();
-    });
-  }
+export function handleOpenPopup(popupTemplate) {
+  popupTemplate.classList.add("popup_is-opened");
 
-  // Функция закрытия попапа при нажатии на Esc
+  popupTemplate.addEventListener('click', (event) => {
+    closePopupByOverlay(event);
+  });
+
+  // А точно ли событие кнопок добавлять на весь документ?
+  // Но проще на документ, так как легче удалять событие
   document.addEventListener("keydown", closePopupEsc);
+}
 
-  // Находим форму в DOM
-  const form = popupEl.querySelector(".popup__form");
-  if (form) {
-    form.addEventListener("submit", handleFormSubmit);
+export function handleClosePopup(popupTemplate) {
+  popupTemplate.classList.remove("popup_is-opened");
+
+  document.removeEventListener("keydown", closePopupEsc);
+  // удаляем событие по оверлэй
+  document.removeEventListener('click', popupTemplate);
+}
+
+export function closePopupByOverlay(event) {
+  if (event && event.target === event.currentTarget) {
+    handleClosePopup(event.currentTarget);
   }
+}
 
-  function closePopupEsc(event) {
-    if (event.key === "Escape") {
-      handleClosePopup();
-    }
+export function closePopupByCloseButton(event) {
+  if (event.target.classList.contains("popup__close")) {
+    handleClosePopup(event.target.parentNode.parentNode);
   }
+}
 
-  //Функция закрытия попапа
-  function handleClosePopup() {
-    popupEl.classList.remove("popup_is-animated");
-    popupEl.classList.remove("popup_is-opened");
-    popupEl.removeEventListener("click", popupEl);
-    closeButton.removeEventListener("click", closeButton);
-    document.removeEventListener("keydown", closePopupEsc);
-
-    if (form) {
-      form.removeEventListener("submit", handleFormSubmit);
-    }
-    if (onCloseCb) {
-      onCloseCb();
-    }
-  }
-
-  // Обработчик «отправки» формы, хотя пока
-  // она никуда отправляться не будет
-  function handleFormSubmit(evt) {
-    evt.preventDefault();
-    if (onSumitCb) {
-      onSumitCb();
-    }
-    handleClosePopup();
+function closePopupEsc(event) {
+  if (event.key === "Escape") {
+    const currentPopup = document.querySelector(".popup_is-opened");
+    handleClosePopup(currentPopup);
   }
 }
