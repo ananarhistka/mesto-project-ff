@@ -1,6 +1,5 @@
-
 export function createPopup({ button, popupTemplate, onOpened }) {
-  button.addEventListener('click', () => {
+  button.addEventListener("click", () => {
     handleOpenPopup(popupTemplate);
 
     if (onOpened) {
@@ -11,8 +10,9 @@ export function createPopup({ button, popupTemplate, onOpened }) {
 
 export function handleOpenPopup(popupTemplate) {
   popupTemplate.classList.add("popup_is-opened");
+  popupTemplate.classList.add("popup_is-animated");
 
-  popupTemplate.addEventListener('click', (event) => {
+  popupTemplate.addEventListener("click", (event) => {
     closePopupByOverlay(event);
   });
 
@@ -23,10 +23,11 @@ export function handleOpenPopup(popupTemplate) {
 
 export function handleClosePopup(popupTemplate) {
   popupTemplate.classList.remove("popup_is-opened");
+  popupTemplate.classList.add("popup_is-animated");
 
   document.removeEventListener("keydown", closePopupEsc);
   // удаляем событие по оверлэй
-  document.removeEventListener('click', popupTemplate);
+  document.removeEventListener("click", popupTemplate);
 }
 
 export function closePopupByOverlay(event) {

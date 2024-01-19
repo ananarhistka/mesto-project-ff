@@ -1,13 +1,17 @@
 // index.js
 import "./styles/index.css";
-import {createCard, handleDeleteCard, handleLikeCard} from "./components/card.js";
+import {
+  createCard,
+  handleDeleteCard,
+  handleLikeCard,
+} from "./components/card.js";
 import {
   closePopupByCloseButton,
   createPopup,
   handleClosePopup,
-  handleOpenPopup
+  handleOpenPopup,
 } from "./components/modal.js";
-import {initialCards} from "./scripts/cards";
+import { initialCards } from "./scripts/cards";
 
 const placesList = document.querySelector(".places__list");
 
@@ -15,8 +19,8 @@ const logoImage = new URL("./images/logo.svg", import.meta.url);
 const avatarImage = new URL("./images/avatar.jpg", import.meta.url);
 
 const whoIsTheGoat = [
-  {name: "Logo", link: logoImage},
-  {name: "Avarat", link: avatarImage},
+  { name: "Logo", link: logoImage },
+  { name: "Avarat", link: avatarImage },
 ];
 
 //***
@@ -46,7 +50,6 @@ document.addEventListener("click", (event) => {
 });
 
 function initApp() {
-
   loadCards(placesList);
 
   // init Popups
@@ -60,7 +63,7 @@ function initApp() {
   });
   createPopup({
     button: createCardButton,
-    popupTemplate: createCardPopup
+    popupTemplate: createCardPopup,
   });
 }
 
@@ -81,7 +84,7 @@ function createCardSubmit(event) {
   const formValue = {
     name: cardForm.elements["place-name"].value,
     link: cardForm.elements.link.value,
-  }
+  };
 
   renderCard(formValue, "shift");
 
