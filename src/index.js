@@ -7,21 +7,12 @@ import {
 } from "./components/card.js";
 import {
   closePopupByCloseButton,
-  createPopup,
   handleClosePopup,
   handleOpenPopup,
 } from "./components/modal.js";
-import { initialCards } from "./scripts/cards";
+import { initialCards } from "./constans/cards";
 
 const placesList = document.querySelector(".places__list");
-
-const logoImage = new URL("./images/logo.svg", import.meta.url);
-const avatarImage = new URL("./images/avatar.jpg", import.meta.url);
-
-const whoIsTheGoat = [
-  { name: "Logo", link: logoImage },
-  { name: "Avarat", link: avatarImage },
-];
 
 //***
 
@@ -49,25 +40,15 @@ document.addEventListener("click", (event) => {
   closePopupByCloseButton(event);
 });
 
-function initApp() {
-  loadCards(placesList);
+loadCards(placesList);
 
-  // init Popups
-  createPopup({
-    button: editProfileButton,
-    popupTemplate: editProfilePopup,
-    onOpened: () => {
-      profileForm.elements.name.value = profileTitle.textContent;
-      profileForm.elements.description.value = profileDescription.textContent;
-    },
-  });
-  createPopup({
-    button: createCardButton,
-    popupTemplate: createCardPopup,
-  });
-}
-
-initApp();
+createCardButton.addEventListener("click", () =>
+  handleOpenPopup(createCardPopup)
+);
+editProfileButton.addEventListener("click", () =>
+  handleOpenPopup(editProfilePopup)
+);
+// init Popups
 
 function editProfileSubmit(event) {
   event.preventDefault();

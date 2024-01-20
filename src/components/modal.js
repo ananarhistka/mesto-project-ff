@@ -1,23 +1,8 @@
-export function createPopup({ button, popupTemplate, onOpened }) {
-  button.addEventListener("click", () => {
-    handleOpenPopup(popupTemplate);
-
-    if (onOpened) {
-      onOpened();
-    }
-  });
-}
-
 export function handleOpenPopup(popupTemplate) {
   popupTemplate.classList.add("popup_is-opened");
   popupTemplate.classList.add("popup_is-animated");
 
-  popupTemplate.addEventListener("click", (event) => {
-    closePopupByOverlay(event);
-  });
-
-  // А точно ли событие кнопок добавлять на весь документ?
-  // Но проще на документ, так как легче удалять событие
+  popupTemplate.addEventListener("click", closePopupByOverlay);
   document.addEventListener("keydown", closePopupEsc);
 }
 

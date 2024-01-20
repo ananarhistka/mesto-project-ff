@@ -1,13 +1,7 @@
 const cardTemplate = document.querySelector("#card-template").content;
 
-
 // Функция создания карточки
-export function createCard(
-  cardItem,
-  deleteCardFn,
-  likeCardFn,
-  openCardFn,
-) {
+export function createCard(cardItem, deleteCardFn, likeCardFn, openCardFn) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const deleteButton = cardElement.querySelector(".card__delete-button");
   const likeButton = cardElement.querySelector(".card__like-button");
@@ -23,9 +17,6 @@ export function createCard(
   });
 
   cardImage.addEventListener("click", (event) => {
-    if (event.target === deleteButton) {
-      return;
-    }
     openCardFn(cardItem);
   });
 
@@ -38,9 +29,7 @@ export function createCard(
 
 export function handleDeleteCard(cardElement) {
   cardElement.remove();
-  // Stackoverflow рулит - https://stackoverflow.com/questions/4386300/javascript-dom-how-to-remove-all-event-listeners-of-a-dom-object
-  // Говорят так можно все лиснеры удалить. Хочу в это верить
-  cardElement.replaceWith(cardElement.cloneNode(true));
+  cardElement = null;
 }
 
 export function handleLikeCard(cardButton) {
