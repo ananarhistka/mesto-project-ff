@@ -21,3 +21,9 @@
 .card__delete-button:hover {
   opacity: 0.6;
 }
+
+.popup__button:disabled {
+  background-color: #FFF;
+  color: #C4C4C4;
+  border: 1px solid #C4C4C4;
+}

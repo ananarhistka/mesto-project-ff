@@ -8,7 +8,6 @@ export function handleOpenPopup(popupTemplate) {
 
 export function handleClosePopup(popupTemplate) {
   popupTemplate.classList.remove("popup_is-opened");
-  popupTemplate.classList.add("popup_is-animated");
 
   document.removeEventListener("keydown", closePopupEsc);
   // удаляем событие по оверлэй
@@ -33,3 +32,4 @@ function closePopupEsc(event) {
     handleClosePopup(currentPopup);
   }
 }
+
