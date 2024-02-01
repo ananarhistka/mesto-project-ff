@@ -93,14 +93,36 @@ export function clearValidation(form, validationConfig) {
   });
 }
 
-const config = {
-  rbaseUrl: 'https://nomoreparties.co/v1/wff-cohort-5/cards', 
-  headers: {
-    authorization: '94d09f29-1e03-4124-b242-cae4038f357c',
-    'Content-Type': 'application/json; charset=UTF-8'
-  }
+const sendRequiest = (uri) => {
+  const cohordId = 'wff-cohort-5';
+  const baseUrl = `https://nomoreparties.co/v1/${cohordId}`;
+  return fetch(baseUrl + uri, {
+    headers: {
+      authorization: '94d09f29-1e03-4124-b242-cae4038f357c'
+    }
+  });
 }
-  .then(res => res.json())
-  .then((result) => {
-    console.log(result);
+
+const getUserInfo = sendRequiest('/users/me').then(response => {
+  if (response.ok) {
+    return response.json();
+  }
+  return Promise.reject(`Ошибка: ${response.status}`);
+});
+
+export const getCards = sendRequiest('/cards').then(response => {
+  if (response.ok) {
+    console.log(getCards)
+    return response.json();
+  }
+  return Promise.reject(`Ошибка: ${response.status}`);
+});
+
+Promise.all([getUserInfo, getCards])
+  .then(([userInfo, cards]) => {
+    console.log(userInfo);
+    console.log(cards);
+  })
+  .catch(error => {
+    console.log('Ошибка получения данных:', error);
   });
