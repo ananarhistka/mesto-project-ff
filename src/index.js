@@ -1,9 +1,22 @@
 // index.js
 import "./styles/index.css";
-import {createCard, handleDeleteCard, handleLikeCard, showPICards} from "./components/card.js";
-import {closePopupByCloseButton, handleClosePopup, handleOpenPopup,} from "./components/modal.js";
-import {clearValidation, enableValidation} from "./components/validation";
-import {appendNewCard, getCards, updateProfile, getUser} from "./components/api";
+import {
+  createCard,
+  handleDeleteCard,
+  handleLikeCard,
+} from "./components/card.js";
+import {
+  closePopupByCloseButton,
+  handleClosePopup,
+  handleOpenPopup,
+} from "./components/modal.js";
+import { clearValidation, enableValidation } from "./components/validation";
+import {
+  appendNewCard,
+  getCards,
+  updateProfile,
+  getUser,
+} from "./components/api";
 
 const placesList = document.querySelector(".places__list");
 
@@ -27,106 +40,114 @@ const profileForm = document.forms["edit-profile"];
 const cardForm = document.forms["new-place"];
 
 const validationConfig = {
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
-}
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
+let user;
 
 // Listeners
 profileForm.addEventListener("submit", editProfileSubmit);
 cardForm.addEventListener("submit", createCardSubmit);
 document.addEventListener("click", (event) => {
-    closePopupByCloseButton(event);
+  closePopupByCloseButton(event);
 });
 
-loadCards(placesList);
-
 createCardButton.addEventListener("click", () => {
-    handleOpenPopup(createCardPopup);
-    clearValidation(cardForm, validationConfig);
+  handleOpenPopup(createCardPopup);
+  clearValidation(cardForm, validationConfig);
 });
 
 editProfileButton.addEventListener("click", () => {
-    handleOpenPopup(editProfilePopup);
-    clearValidation(profileForm, validationConfig);
-    profileForm.elements.name.value = profileTitle.textContent;
-    profileForm.elements.description.value = profileDescription.textContent;
-    profileForm.elements.name.dispatchEvent(new Event('input'));
+  handleOpenPopup(editProfilePopup);
+  clearValidation(profileForm, validationConfig);
+  profileForm.elements.name.value = profileTitle.textContent;
+  profileForm.elements.description.value = profileDescription.textContent;
+  profileForm.elements.name.dispatchEvent(new Event("input"));
 });
 
 // init Popups
 
 async function editProfileSubmit(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const response = await updateProfile({
-        name: profileForm.elements.name.value,
-        about: profileForm.elements.description.value
-    });
-    console.log('[response]', response)
+  const response = await updateProfile({
+    name: profileForm.elements.name.value,
+    about: profileForm.elements.description.value,
+  });
+  console.log("[response]", response);
 
-    profileTitle.textContent = response.name;
-    profileDescription.textContent = response.about;
+  profileTitle.textContent = response.name;
+  profileDescription.textContent = response.about;
 
-    handleClosePopup(editProfilePopup);
+  fillProfile(response.name, response.about);
+
+  handleClosePopup(editProfilePopup);
 }
 
+function fillProfile(name, about) {
+  profileTitle.textContent = name;
+  profileDescription.textContent = about;
+}
 async function createCardSubmit(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const formValue = {
-        name: cardForm.elements["place-name"].value,
-        link: cardForm.elements.link.value,
-    };
+  const formValue = {
+    name: cardForm.elements["place-name"].value,
+    link: cardForm.elements.link.value,
+  };
 
-    const response = await appendNewCard(formValue);
+  const response = await appendNewCard(formValue);
 
-    renderCard(response, "shift");
+  renderCard(response, user._id, "shift");
 
-    handleClosePopup(createCardPopup);
-    cardForm.reset();
+  handleClosePopup(createCardPopup);
+  cardForm.reset();
 }
 
-async function loadCards() {
-    const initialCards = await getCards();
-    initialCards.forEach((item) => {
-        renderCard(item);
-    });
+async function loadCards(userId) {
+  const initialCards = await getCards();
+  initialCards.forEach((item) => {
+    renderCard(item, userId);
+  });
 }
 
-function renderCard(cardModel, pushOrShift = "push") {
-    const cardElement = createCard(
-        cardModel,
-        handleDeleteCard,
-        handleLikeCard,
-        handleOpenCard
-    );
+function renderCard(cardModel, userId, pushOrShift = "push") {
+  const cardElement = createCard(
+    cardModel,
+    handleDeleteCard,
+    handleLikeCard,
+    handleOpenCard,
+    userId
+  );
 
-    if (pushOrShift === "push") {
-        placesList.append(cardElement);
-    } else {
-        placesList.prepend(cardElement);
-    }
+  if (pushOrShift === "push") {
+    placesList.append(cardElement);
+  } else {
+    placesList.prepend(cardElement);
+  }
 }
 
 function handleOpenCard(cardItem) {
-    popupImage.src = cardItem.link;
-    popupImage.alt = cardItem.name;
-    popupCaption.textContent = cardItem.name;
-    handleOpenPopup(popupImageTemplate);
+  popupImage.src = cardItem.link;
+  popupImage.alt = cardItem.name;
+  popupCaption.textContent = cardItem.name;
+  handleOpenPopup(popupImageTemplate);
 }
-
 
 enableValidation(validationConfig);
 
-getUser()
-  .then(userInfo => {
-    console.log(userInfo);
-  })
-  .catch(error => {
-    console.log('Ошибка получения данных о пользователе:', error);
+async function initApp() {
+  user = await getUser().catch((error) => {
+    console.log("Ошибка получения данных о пользователе:", error);
   });
 
+  console.log("[user]", user);
+  loadCards(user._id);
+}
+
+initApp();

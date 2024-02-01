@@ -1,24 +1,26 @@
 const cardTemplate = document.querySelector("#card-template").content;
 
 // Функция создания карточки
-export function createCard(cardItem, deleteCardFn, likeCardFn, openCardFn) {
+export function createCard(cardItem, deleteCardFn, likeCardFn, openCardFn, userId) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const deleteButton = cardElement.querySelector(".card__delete-button");
   const likeButton = cardElement.querySelector(".card__like-button");
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
-
-  deleteButton.addEventListener("click", () => {
-    deleteCardFn(cardItem._id, cardElement); 
-  });
+  cardElement.dataset.userId = userId;
 
   cardTitle.textContent = cardItem.name;
   cardImage.src = cardItem.link;
   cardImage.alt = cardItem.name;
+  if (userId === cardItem.owner._id) {
 
-  deleteButton.addEventListener("click", () => {
-    deleteCardFn(cardElement);
-  });
+    deleteButton.addEventListener("click", () => {
+      deleteCardFn(cardElement);
+    });
+  
+  } else {
+    deleteButton.remove();
+  }
 
   cardImage.addEventListener("click", (event) => {
     openCardFn(cardItem);

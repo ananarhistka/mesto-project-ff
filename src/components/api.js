@@ -19,14 +19,6 @@ const createHeaders = (headers) => {
   };
 };
 
-const getUserInfo = () =>
-  sendRequest("/users/me").then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(`Ошибка: ${response.status}`);
-  });
-getUserInfo();
 export const getCards = () =>
   sendRequest("/cards").then((response) => {
     if (response.ok) {
@@ -79,50 +71,51 @@ export function appendNewCard(cardInform) {
 }
 
 export function deleteCardId() {
-  return fetch(baseUrl + "/cards/", {
-    method: "GET",
-    headers: {
-      Authorization: "94d09f29-1e03-4124-b242-cae4038f357c",
-    },
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Error: ${res.status}`);
-    })
-    .then((data) => data)
-    .catch((err) => console.log(`Ошибка ${err}`));
-}
-
-export const getUser = () => {
-  return fetch(baseUrl + "/users/me", {
-    method: "GET",
-    headers: "94d09f29-1e03-4124-b242-cae4038f357c",
+  return fetch(baseUrl + "/cards", {
+    ...createHeaders(),
   }).then((res) => {
     if (res.ok) {
       return res.json();
     }
     return Promise.reject(res.status);
   });
+}
+
+export const getUser = () => {
+  return fetch(baseUrl + "/users/me", {
+    ...createHeaders(),
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res.status);
+    })
+    .catch((err) => console.log(`Ошибка ${err}`));
 };
 
-export async function showPICards(createCard, showCard, placesList) {
-  const userId = await getUser().then((user = user._id));
-  getCards()
-    .then((addCard) => {
-      addCard.forEach((card) => {
-        placesList.append(
-          createCard(
-            card.name,
-            card.link,
-            card.likes.length,
-            showCard,
-            card.owner._id,
-            userId
-          )
-        );
-      });
+export const likesCaerd = () => {
+  return fetch(baseUrl + "/cards/likes/" + _id, {
+    method: "PUT",
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res.status);
     })
-    .catch((err) => console.log(`Ошибка ${err} `));
-}
+    .catch((err) => console.log(`Ошибка ${err}`));
+};
+
+export const DeleteCaerd = () => {
+  return fetch(baseUrl + "/cards/likes/" + _id, {
+    method: "DELETE",
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res.status);
+    })
+    .catch((err) => console.log(`Ошибка ${err}`));
+};
