@@ -8,6 +8,10 @@ export function createCard(cardItem, deleteCardFn, likeCardFn, openCardFn) {
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
 
+  deleteButton.addEventListener("click", () => {
+    deleteCardFn(cardItem._id, cardElement); 
+  });
+
   cardTitle.textContent = cardItem.name;
   cardImage.src = cardItem.link;
   cardImage.alt = cardItem.name;
@@ -35,3 +39,4 @@ export function handleDeleteCard(cardElement) {
 export function handleLikeCard(cardButton) {
   cardButton.classList.toggle("card__like-button_is-active");
 }
+
