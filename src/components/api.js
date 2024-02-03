@@ -70,17 +70,6 @@ export function appendNewCard(cardInform) {
   });
 }
 
-export function deleteCardId() {
-  return fetch(baseUrl + "/cards", {
-    ...createHeaders(),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(res.status);
-  });
-}
-
 export const getUser = () => {
   return fetch(baseUrl + "/users/me", {
     ...createHeaders(),
@@ -94,9 +83,9 @@ export const getUser = () => {
     .catch((err) => console.log(`Ошибка ${err}`));
 };
 
-export const likesCaerd = () => {
-  return fetch(baseUrl + "/cards/likes/" + _id, {
-    method: "PUT",
+export const deleteCard = (cardId) => {
+  return fetch(baseUrl + `/cards/${cardId}`, {
+    method: "DELETE",
   })
     .then((res) => {
       if (res.ok) {
@@ -107,9 +96,24 @@ export const likesCaerd = () => {
     .catch((err) => console.log(`Ошибка ${err}`));
 };
 
-export const DeleteCaerd = () => {
-  return fetch(baseUrl + "/cards/likes/" + _id, {
+export function addLikes(cardId) {
+  return fetch(baseUrl + `/cards/likes/${cardId}`, {
+    method: "PUT",
+    ...createHeaders(),
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res.status);
+    })
+    .catch((err) => console.log(`Ошибка ${err}`));
+}
+
+export const deleteLikes = (cardId) => {
+  return fetch(baseUrl + `/cards/likes/${cardId}`, {
     method: "DELETE",
+    ...createHeaders(),
   })
     .then((res) => {
       if (res.ok) {

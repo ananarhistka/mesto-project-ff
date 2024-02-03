@@ -20,10 +20,13 @@
       </header>
       <main class="content">
         <section class="profile page__section">
+          <span class="profile__edit-avatar-overlay"></span>
           <div
-            class="profile__image"
+            class="profile__image img-avatar"
             style="background-image: url('<%=require('./images/avatar.jpg')%>')"
-          ></div>
+          >
+            <span class="profile__edit-avatar-overlay"></span>
+          </div>
           <div class="profile__info">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
             <button class="profile__edit-button" type="button"></button>
@@ -126,7 +129,7 @@
           <h2 class="card__title"></h2>
           <div class="like__button__card">
             <button type="button" class="card__like-button"></button>
-            <span>6</span>
+            <span class="card__like-counter">0</span>
           </div>
         </div>
       </li>

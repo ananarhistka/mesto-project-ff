@@ -16,6 +16,7 @@ import {
   getCards,
   updateProfile,
   getUser,
+  likeCardUser
 } from "./components/api";
 
 const placesList = document.querySelector(".places__list");
@@ -122,7 +123,7 @@ function renderCard(cardModel, userId, pushOrShift = "push") {
     handleDeleteCard,
     handleLikeCard,
     handleOpenCard,
-    userId
+    userId,
   );
 
   if (pushOrShift === "push") {
@@ -151,3 +152,4 @@ async function initApp() {
 }
 
 initApp();
+
