@@ -45,6 +45,7 @@ export function createCard(
   likeButton.addEventListener("click", () =>
     likeCardFn(likeButton, likeCount, cardItem._id)
   );
+  
   return cardElement;
 }
 

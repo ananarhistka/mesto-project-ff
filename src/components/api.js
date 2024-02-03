@@ -38,20 +38,6 @@ export const updateProfile = (data) => {
       console.error("Ошибка:", error);
     });
 };
-// Promise.all([getUserInfo, getCards])
-//     .then(([userInfo, cards]) => {
-//         console.log(userInfo);
-//         console.log(cards);
-//     })
-//     .catch(error => {
-//         console.log('Ошибка получения данных:', error);
-//     });
-// const url = `https://nomoreparties.co/v1/${cohortId}`;
-// const data = {
-//     name: 'Marie Skłodowska Curie',
-//     about: 'Physicist and Chemist'
-// };
-
 export function appendNewCard(cardInform) {
   return fetch(baseUrl + "/cards", {
     method: "POST",
@@ -123,3 +109,18 @@ export const deleteLikes = (cardId) => {
     })
     .catch((err) => console.log(`Ошибка ${err}`));
 };
+
+
+/*export const deleteLikes = () => {
+  return fetch(baseUrl + `/users/me${avatar}`, {
+    method: "PATCH",
+    ...createHeaders(),
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res.status);
+    })
+    .catch((err) => console.log(`Ошибка ${err}`));
+};*/

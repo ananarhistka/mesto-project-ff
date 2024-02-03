@@ -16,7 +16,6 @@ import {
   getCards,
   updateProfile,
   getUser,
-  likeCardUser
 } from "./components/api";
 
 const placesList = document.querySelector(".places__list");
