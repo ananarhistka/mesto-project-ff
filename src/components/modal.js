@@ -14,6 +14,15 @@ export function handleClosePopup(popupTemplate) {
   document.removeEventListener("click", popupTemplate);
 }
 
+
+export function changeStatePopup(popupTemplate, isPending) {
+  const buttonElement = popupTemplate.querySelector(".popup__button");
+  
+  if (buttonElement) {
+    buttonElement.textContent = isPending ? "Сохранение..." : "Сохранить";
+  }
+}
+
 export function closePopupByOverlay(event) {
   if (event && event.target === event.currentTarget) {
     handleClosePopup(event.currentTarget);

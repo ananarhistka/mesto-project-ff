@@ -9,6 +9,7 @@ import {
   closePopupByCloseButton,
   handleClosePopup,
   handleOpenPopup,
+  changeStatePopup,
 } from "./components/modal.js";
 import { clearValidation, enableValidation } from "./components/validation";
 import {
@@ -16,6 +17,7 @@ import {
   getCards,
   updateProfile,
   getUser,
+  updateAvatar,
 } from "./components/api";
 
 const placesList = document.querySelector(".places__list");
@@ -28,6 +30,14 @@ const profileDescription = document.querySelector(".profile__description");
 const createCardButton = document.querySelector(".profile__add-button");
 const createCardPopup = document.querySelector(".popup_type_new-card");
 
+const addNewAvatarButton = document.querySelector(
+  ".profile__edit-avatar-overlay-button"
+);
+const createButtonPopupAvatar = document.querySelector(
+  ".popup_type_new-avatar"
+);
+const linkPictureAvatar = document.querySelector(".img-avatar");
+
 const editProfileButton = document.querySelector(".profile__edit-button");
 const editProfilePopup = document.querySelector(".popup_type_edit");
 
@@ -36,6 +46,7 @@ const popupImage = popupImageTemplate.querySelector(".popup__image");
 const popupCaption = popupImageTemplate.querySelector(".popup__caption");
 
 // Forms
+const newAvatarForm = document.forms["new-avatar"];
 const profileForm = document.forms["edit-profile"];
 const cardForm = document.forms["new-place"];
 
@@ -53,9 +64,34 @@ let user;
 // Listeners
 profileForm.addEventListener("submit", editProfileSubmit);
 cardForm.addEventListener("submit", createCardSubmit);
+newAvatarForm.addEventListener("submit", editAvatarSubmit);
+
 document.addEventListener("click", (event) => {
   closePopupByCloseButton(event);
 });
+addNewAvatarButton.addEventListener("click", () => {
+  handleOpenPopup(createButtonPopupAvatar);
+  clearValidation(newAvatarForm, validationConfig);
+  newAvatarForm.elements.link.value = String(
+    linkPictureAvatar.style.backgroundImage
+  )
+    .replace(/url\(\"/, "")
+    .replace(/\"\)$/, "");
+  newAvatarForm.elements.link.dispatchEvent(new Event("input"));
+});
+
+async function editAvatarSubmit(event) {
+  event.preventDefault();
+
+  changeStatePopup(createButtonPopupAvatar, true);
+  const response = await updateAvatar({
+    avatar: newAvatarForm.elements.link.value,
+  });
+
+  changeStatePopup(createButtonPopupAvatar, false);
+  setUserAvatar(response.avatar);
+  handleClosePopup(createButtonPopupAvatar);
+}
 
 createCardButton.addEventListener("click", () => {
   handleOpenPopup(createCardPopup);
@@ -75,11 +111,12 @@ editProfileButton.addEventListener("click", () => {
 async function editProfileSubmit(event) {
   event.preventDefault();
 
+  changeStatePopup(editProfilePopup, true);
   const response = await updateProfile({
     name: profileForm.elements.name.value,
     about: profileForm.elements.description.value,
   });
-  console.log("[response]", response);
+  changeStatePopup(editProfilePopup, false);
 
   profileTitle.textContent = response.name;
   profileDescription.textContent = response.about;
@@ -93,9 +130,14 @@ function fillProfile(name, about) {
   profileTitle.textContent = name;
   profileDescription.textContent = about;
 }
+
+function setUserAvatar(avatarLink) {
+  linkPictureAvatar.style.backgroundImage = `url(${avatarLink}`;
+}
+
 async function createCardSubmit(event) {
   event.preventDefault();
-
+  changeStatePopup(createCardPopup, true);
   const formValue = {
     name: cardForm.elements["place-name"].value,
     link: cardForm.elements.link.value,
@@ -103,6 +145,7 @@ async function createCardSubmit(event) {
 
   const response = await appendNewCard(formValue);
 
+  changeStatePopup(createCardPopup, false);
   renderCard(response, user._id, "shift");
 
   handleClosePopup(createCardPopup);
@@ -122,7 +165,7 @@ function renderCard(cardModel, userId, pushOrShift = "push") {
     handleDeleteCard,
     handleLikeCard,
     handleOpenCard,
-    userId,
+    userId
   );
 
   if (pushOrShift === "push") {
@@ -146,9 +189,9 @@ async function initApp() {
     console.log("Ошибка получения данных о пользователе:", error);
   });
 
+  setUserAvatar(user.avatar);
   console.log("[user]", user);
   loadCards(user._id);
 }
 
 initApp();
-

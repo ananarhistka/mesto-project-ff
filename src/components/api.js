@@ -72,6 +72,7 @@ export const getUser = () => {
 export const deleteCard = (cardId) => {
   return fetch(baseUrl + `/cards/${cardId}`, {
     method: "DELETE",
+    ...createHeaders(),
   })
     .then((res) => {
       if (res.ok) {
@@ -111,16 +112,14 @@ export const deleteLikes = (cardId) => {
 };
 
 
-/*export const deleteLikes = () => {
-  return fetch(baseUrl + `/users/me${avatar}`, {
+export const updateAvatar = (data) => {
+  return fetch(baseUrl + `/users/me/avatar`, {
     method: "PATCH",
     ...createHeaders(),
+    body: JSON.stringify(data),
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => console.log(`Ошибка ${err}`));
-};*/
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error("Ошибка:", error);
+    });
+};

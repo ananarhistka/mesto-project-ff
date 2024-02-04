@@ -14,7 +14,7 @@ export function enableValidation(options) {
 const setEventListeners = (formElement, options) => {
   const inputList = Array.from(formElement.querySelectorAll(options.inputSelector));
   const buttonElement = formElement.querySelector(options.submitButtonSelector);
-  
+  console.log('[inputList]', inputList)
   toggleButtonState(inputList, buttonElement, options.inactiveButtonClass);
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
