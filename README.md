@@ -1,3 +1,3 @@
 # Проектная работа Mesto
-https://github.com/ananarhistka/mesto-project-ff.git
+https://ananarhistka.github.io/mesto-project-ff/
 

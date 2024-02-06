@@ -4,7 +4,7 @@
   "description": "https://github.com/ananarhistka/mesto-project-ff.git",
   "main": "index.js",
   "scripts": {
-    "build": "rd /s /q dist && webpack",
+    "build": "rd /s /q dist && webpack --production",
     "dev": "webpack serve"
   },
   "author": "",

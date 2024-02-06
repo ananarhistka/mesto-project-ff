@@ -190,7 +190,7 @@ async function initApp() {
   });
 
   setUserAvatar(user.avatar);
-  console.log("[user]", user);
+  fillProfile(user.name, user.about);
   loadCards(user._id);
 }
 

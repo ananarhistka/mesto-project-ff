@@ -1009,7 +1009,7 @@ template {
   display: none;
 }
 
-.form__input-error_active {
+.popup__error_visible{
   display: block;
   color: red;
 }
