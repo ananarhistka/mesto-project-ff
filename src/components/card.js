@@ -1,4 +1,4 @@
-import { addLikes, deleteLikes, deleteCard } from "./api";
+import { addLike, deleteLike, deleteCard } from "./api";
 
 const cardTemplate = document.querySelector("#card-template").content;
 
@@ -50,17 +50,16 @@ export function createCard(
 }
 
 export function handleDeleteCard(cardElement, cardId) {
-  cardElement.remove();
-  cardElement = null;
   deleteCard(cardId);
+  cardElement.remove();
 }
 
 export async function handleLikeCard(likeButton, likeCount, cardId) {
   const newCardState = likeButton.classList.contains(
     "card__like-button_is-active"
   )
-    ? await deleteLikes(cardId)
-    : await addLikes(cardId);
+    ? await deleteLike(cardId)
+    : await addLike(cardId);
 
   console.log('[newCardState]', newCardState);
   likeCount.textContent = newCardState.likes.length;

@@ -1,3 +1,10 @@
+const handleResponse = (response) => {
+  if (response.ok) {
+    return response.json();
+  }
+  return Promise.reject(`Ошибка: ${response.status}`);
+};
+
 const sendRequest = (uri, method = "GET", body) => {
   return fetch(baseUrl + uri, {
     method,
@@ -20,24 +27,16 @@ const createHeaders = (headers) => {
 };
 
 export const getCards = () =>
-  sendRequest("/cards").then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(`Ошибка: ${response.status}`);
-  });
+  sendRequest("/cards").then(handleResponse);
 
 export const updateProfile = (data) => {
   return fetch(baseUrl + "/users/me", {
     method: "PATCH",
     ...createHeaders(),
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error("Ошибка:", error);
-    });
+  }).then(handleResponse);
 };
+
 export function appendNewCard(cardInform) {
   return fetch(baseUrl + "/cards", {
     method: "POST",
@@ -46,81 +45,40 @@ export function appendNewCard(cardInform) {
       name: cardInform.name,
       link: cardInform.link,
     }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      console.log("err");
-      return Promise.reject(`Error: ${res.status}`);
-    }
-  });
+  }).then(handleResponse);
 }
 
 export const getUser = () => {
   return fetch(baseUrl + "/users/me", {
     ...createHeaders(),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => console.log(`Ошибка ${err}`));
+  }).then(handleResponse);
 };
 
 export const deleteCard = (cardId) => {
   return fetch(baseUrl + `/cards/${cardId}`, {
     method: "DELETE",
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => console.log(`Ошибка ${err}`));
+    ...createHeaders(),
+  }).then(handleResponse);
 };
 
-export function addLikes(cardId) {
+export function addLike(cardId) {
   return fetch(baseUrl + `/cards/likes/${cardId}`, {
     method: "PUT",
     ...createHeaders(),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => console.log(`Ошибка ${err}`));
+  }).then(handleResponse);
 }
 
-export const deleteLikes = (cardId) => {
+export const deleteLike = (cardId) => {
   return fetch(baseUrl + `/cards/likes/${cardId}`, {
     method: "DELETE",
     ...createHeaders(),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => console.log(`Ошибка ${err}`));
+  }).then(handleResponse);
 };
 
-
-/*export const deleteLikes = () => {
-  return fetch(baseUrl + `/users/me${avatar}`, {
+export const updateAvatar = (data) => {
+  return fetch(baseUrl + `/users/me/avatar`, {
     method: "PATCH",
     ...createHeaders(),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => console.log(`Ошибка ${err}`));
-};*/
+    body: JSON.stringify(data),
+  }).then(handleResponse);
+};

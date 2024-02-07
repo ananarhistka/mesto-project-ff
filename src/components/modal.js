@@ -11,7 +11,16 @@ export function handleClosePopup(popupTemplate) {
 
   document.removeEventListener("keydown", closePopupEsc);
   // удаляем событие по оверлэй
-  document.removeEventListener("click", popupTemplate);
+  popupTemplate.removeEventListener("click", closePopupByOverlay); 
+}
+
+
+export function changeStatePopup(popupTemplate, isPending) {
+  const buttonElement = popupTemplate.querySelector(".popup__button");
+  
+  if (buttonElement) {
+    buttonElement.textContent = isPending ? "Сохранение..." : "Сохранить";
+  }
 }
 
 export function closePopupByOverlay(event) {
@@ -20,9 +29,9 @@ export function closePopupByOverlay(event) {
   }
 }
 
-export function closePopupByCloseButton(event) {
-  if (event.target.classList.contains("popup__close")) {
-    handleClosePopup(event.target.parentNode.parentNode);
+export function closePopupByCloseButton(event) {  
+  if (event.target.classList.contains("popup__close")) {  
+    handleClosePopup(event.target.closest(".popup"));  
   }
 }
 
